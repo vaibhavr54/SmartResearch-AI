@@ -129,11 +129,6 @@ streamlit run main.py
 * 🧠 Advanced RAG (re-ranking, hybrid search)
 * ☁️ Cloud deployment
 
----
-
-## 🎤 Viva Summary
-
-**“This project implements a multi-agent RAG-based research system that retrieves real-time data, generates structured reports, and enables chatbot interaction with the generated content using vector-based retrieval.”**
 
 ---
 
