@@ -103,13 +103,6 @@ def run_pipeline(topic):
         unsafe_allow_html=True
     )
 
-    # DOWNLOAD BUTTONS
-    st.download_button(
-        "⬇ Download TXT",
-        final,
-        "report.txt"
-    )
-
     pdf = create_pdf(final, "report.pdf")
 
     with open(pdf, "rb") as f:
