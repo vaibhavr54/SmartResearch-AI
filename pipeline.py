@@ -13,17 +13,17 @@ def run_pipeline(topic):
     progress = st.progress(0)
 
     # QUERY
-    st.markdown("##  Query")
+    st.markdown("## Query")
     st.write(topic)
     progress.progress(10)
 
-    # PLAN (Hidden from UI)
+    # PLAN
     plan = planner(topic)
     queries = [p["query"] for p in plan]
     progress.progress(20)
 
     # SEARCH
-    st.markdown("##  Search Results")
+    st.markdown("## Search Results")
 
     with ThreadPoolExecutor() as ex:
         results = list(ex.map(search, queries))
@@ -44,22 +44,13 @@ def run_pipeline(topic):
     context = memory.search(topic)
     context_text = "\n".join(context)
 
-    # SUMMARY
-    st.markdown("##  Summary")
-
-    summary = t5_summarize(context_text)
-
-    st.markdown(
-        f'<div class="card">{summary}</div>',
-        unsafe_allow_html=True
-    )
+    # DIRECT REPORT GENERATION
+    draft = writer(context_text)
 
     progress.progress(55)
 
     # DRAFT REPORT
-    st.markdown("##  Draft Report")
-
-    draft = writer(summary)
+    st.markdown("## Draft Report")
 
     st.markdown(
         f'<div class="card">{draft}</div>',
@@ -69,7 +60,7 @@ def run_pipeline(topic):
     progress.progress(70)
 
     # CRITIC
-    st.markdown("##  Critique")
+    st.markdown("## Critique")
 
     critique_text = critic(draft)
 
@@ -81,7 +72,7 @@ def run_pipeline(topic):
     progress.progress(80)
 
     # IMPROVED REPORT
-    st.markdown("##  Corrected Report")
+    st.markdown("## Corrected Report")
 
     corrected = improver(draft, critique_text)
 
@@ -93,12 +84,22 @@ def run_pipeline(topic):
     progress.progress(90)
 
     # FINAL REPORT
-    st.markdown("##  Final Report")
+    st.markdown("## Final Report")
 
     final = corrected
 
     st.markdown(
         f'<div class="card">{final}</div>',
+        unsafe_allow_html=True
+    )
+
+    # FINAL SUMMARY (ONLY SUMMARY KEPT)
+    st.markdown("## Final Summary")
+
+    final_summary = t5_summarize(final[:1000])
+
+    st.markdown(
+        f'<div class="card">{final_summary}</div>',
         unsafe_allow_html=True
     )
 
@@ -118,20 +119,8 @@ def run_pipeline(topic):
             "report.pdf"
         )
 
-    progress.progress(95)
-
-    # FINAL SUMMARY
-    st.markdown("##  Final Summary")
-
-    final_summary = t5_summarize(final[:1000])
-
-    st.markdown(
-        f'<div class="card">{final_summary}</div>',
-        unsafe_allow_html=True
-    )
-
     # CONFIDENCE SCORE
-    st.markdown("##  Confidence Score")
+    st.markdown("## Confidence Score")
 
     confidence = call_llm(
         "Score 0-100",

@@ -7,18 +7,19 @@ embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 class Memory:
     def __init__(self):
+
         self.docs = []
         self.vecs = []
         self.index = None
 
     def add(self, texts):
-        for t in texts:
-            for chunk in t.split(". "):
-                if len(chunk) > 30:
-                    v = embed_model.encode(chunk)
-                    v = v / np.linalg.norm(v)
-                    self.docs.append(chunk)
-                    self.vecs.append(v)
+        for text in texts:
+            chunks = [text[i:i+500] for i in range(0, len(text), 500)]
+            for chunk in chunks:
+                v = embed_model.encode(chunk)
+                v = v / np.linalg.norm(v)
+                self.docs.append(chunk)
+                self.vecs.append(v)
 
         if self.vecs:
             dim = len(self.vecs[0])
