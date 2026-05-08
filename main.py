@@ -10,21 +10,21 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🚀 AI-Powered Research Automation System")
+st.title(" AI-Powered Research Automation System")
 
-page = st.radio("", ["📊 Research", "💬 Assistant"], horizontal=True)
+page = st.radio("", [" Research", " Assistant"], horizontal=True)
 
-if page == "📊 Research":
+if page == " Research":
     topic = st.text_input("Enter Topic")
 
-    if st.button("🚀 Generate"):
+    if st.button(" Generate"):
         if len(topic) < 3:
             st.warning("Enter valid topic")
         else:
             mem = run_pipeline(topic)
             st.session_state.mem = mem
 
-elif page == "💬 Assistant":
+elif page == " Assistant":
     if "mem" not in st.session_state:
         st.warning("Generate report first")
     else:
