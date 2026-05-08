@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from utils import search, call_llm, create_pdf
 from memory import Memory
 from agents import planner, critic, improver, verifier, writer, summarizer
+from t5_model import t5_summarize
 
 
 def run_pipeline(topic):
@@ -42,7 +43,7 @@ def run_pipeline(topic):
 
     # SUMMARY
     st.markdown("## 📝 Summary")
-    summary = summarizer(context_text)
+    summary = t5_summarize(context_text)
     st.markdown(f'<div class="card">{summary}</div>', unsafe_allow_html=True)
     progress.progress(55)
 
@@ -66,6 +67,7 @@ def run_pipeline(topic):
     progress.progress(90)
 
     # FINAL
+    # FINAL
     st.markdown("## ✅ Final Report")
     final = corrected
 
@@ -76,6 +78,15 @@ def run_pipeline(topic):
         st.download_button("⬇ Download PDF", f, "report.pdf")
 
     progress.progress(95)
+
+    # 🧠 ADD THIS PART (T5 SUMMARY)
+    st.markdown("## 🧠 Final Summary")
+
+    # limit length for better output
+    final_summary = t5_summarize(final[:1000])
+
+    st.markdown(
+        f'<div class="card">{final_summary}</div>', unsafe_allow_html=True)
 
     # VERIFY
     st.markdown("## 🧪 Hallucination Check")
